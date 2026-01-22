@@ -21,5 +21,8 @@ public class Asset {
     @Column(nullable = false, unique = true)
     private String ticker;
 
+    @Column(nullable = false)
+    private String assetType;
+
     private Double balance;
 }
