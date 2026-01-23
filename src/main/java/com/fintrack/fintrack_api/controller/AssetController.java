@@ -23,4 +23,19 @@ public class AssetController {
     public Asset createAsset(@RequestBody Asset asset){
         return assetService.save(asset);
     }
+
+    @GetMapping("/{id}")
+    public Asset getAssetById(@PathVariable Long id){
+        return assetService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Asset updateAsset(@PathVariable Long id, @RequestBody Asset asset){
+        return assetService.update(id, asset);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteAsset(@PathVariable Long id){
+        assetService.deleteById(id);
+    }
 }
