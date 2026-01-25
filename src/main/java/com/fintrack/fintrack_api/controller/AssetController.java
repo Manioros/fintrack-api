@@ -2,6 +2,7 @@ package com.fintrack.fintrack_api.controller;
 
 import com.fintrack.fintrack_api.entity.Asset;
 import com.fintrack.fintrack_api.service.AssetService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class AssetController {
     }
 
     @PostMapping
-    public Asset createAsset(@RequestBody Asset asset){
+    public Asset createAsset(@Valid @RequestBody Asset asset){
         return assetService.save(asset);
     }
 
@@ -30,7 +31,7 @@ public class AssetController {
     }
 
     @PutMapping("/{id}")
-    public Asset updateAsset(@PathVariable Long id, @RequestBody Asset asset){
+    public Asset updateAsset(@PathVariable Long id, @Valid @RequestBody Asset asset){
         return assetService.update(id, asset);
     }
 
