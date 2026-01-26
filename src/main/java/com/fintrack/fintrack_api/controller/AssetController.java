@@ -1,9 +1,11 @@
 package com.fintrack.fintrack_api.controller;
 
+import com.fintrack.fintrack_api.dto.PortfolioSummary;
 import com.fintrack.fintrack_api.entity.Asset;
 import com.fintrack.fintrack_api.service.AssetService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,5 +40,10 @@ public class AssetController {
     @DeleteMapping("/{id}")
     public void deleteAsset(@PathVariable Long id){
         assetService.deleteById(id);
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<PortfolioSummary> getSummary() {
+        return ResponseEntity.ok(assetService.getSummary());
     }
 }

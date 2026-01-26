@@ -1,5 +1,6 @@
 package com.fintrack.fintrack_api.service;
 
+import com.fintrack.fintrack_api.dto.PortfolioSummary;
 import com.fintrack.fintrack_api.entity.Asset;
 import com.fintrack.fintrack_api.exception.ResourceNotFoundException;
 import com.fintrack.fintrack_api.repository.AssetRepository;
@@ -7,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor // Handles the Dependency Injection of the Repository
@@ -35,7 +39,8 @@ public class AssetServiceImpl implements AssetService{
         existingAsset.setName(assetDetails.getName());
         existingAsset.setTicker(assetDetails.getTicker());
         existingAsset.setAssetType(assetDetails.getAssetType());
-        existingAsset.setBalance(assetDetails.getBalance());
+        existingAsset.setQuantity(assetDetails.getQuantity());
+        existingAsset.setCurrentPrice(assetDetails.getCurrentPrice());
         return assetRepository.save(existingAsset);
     }
 
@@ -45,5 +50,19 @@ public class AssetServiceImpl implements AssetService{
             throw new ResourceNotFoundException("Cannot delete. Asset not found with id: " + id);
         }
         assetRepository.deleteById(id);
+    }
+
+    public PortfolioSummary getSummary() {
+        List<Asset> assets = assetRepository.findAll();
+
+        double totalValue = assets.stream()
+                .mapToDouble(asset -> asset.getQuantity() * asset.getCurrentPrice())
+                .sum();
+        Map<String, Double> distribution = assets.stream()
+                .collect(Collectors.groupingBy(
+                        Asset::getAssetType,
+                        Collectors.summingDouble(asset -> asset.getQuantity() * asset.getCurrentPrice())
+                ));
+        return new PortfolioSummary(totalValue, distribution);
     }
 }

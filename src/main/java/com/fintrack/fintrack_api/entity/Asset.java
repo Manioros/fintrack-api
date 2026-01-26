@@ -31,7 +31,15 @@ public class Asset {
     @NotBlank(message = "Asset type is mandatory")
     private String assetType;
 
-    @NotNull(message = "balance cannot be null")
-    @PositiveOrZero(message = "Balance must be zero or positive")
-    private Double balance;
+    @NotNull(message = "Quantity is mandatory")
+    @PositiveOrZero(message = "Quantity must be zero or positive")
+    private Double quantity;
+
+    @NotNull(message = "Current price is mandatory")
+    @PositiveOrZero(message = "Current price must be zero or positive")
+    private Double currentPrice;
+
+    public Double getCalculatedValue() {
+        return (quantity != null && currentPrice != null ? quantity * currentPrice  : 0.0);
+    }
 }
