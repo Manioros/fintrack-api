@@ -9,4 +9,5 @@ public interface AssetService {
     Asset saveAssetForUser(long userId, Asset asset);
     List<Asset> getAssetsByUserId(Long userId);
     PortfolioSummary getSummary(Long userId);
+    void deleteAsset(Long userId, Long AsseetId);
 }

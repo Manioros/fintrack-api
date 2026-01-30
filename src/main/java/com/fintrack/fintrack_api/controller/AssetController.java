@@ -32,4 +32,10 @@ public class AssetController {
     public ResponseEntity<PortfolioSummary> getSummary(@PathVariable Long userId){
         return ResponseEntity.ok(assetService.getSummary(userId));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAsset(@PathVariable Long userId, @PathVariable Long id){
+        assetService.deleteAsset(userId, id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -4,6 +4,7 @@ import com.fintrack.fintrack_api.dto.PortfolioSummary;
 import com.fintrack.fintrack_api.entity.Asset;
 import com.fintrack.fintrack_api.entity.User;
 import com.fintrack.fintrack_api.exception.ResourceNotFoundException;
+import com.fintrack.fintrack_api.exception.UnauthorizedAccessException;
 import com.fintrack.fintrack_api.repository.AssetRepository;
 import com.fintrack.fintrack_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,9 @@ public class AssetServiceImpl implements AssetService{
 
     @Override
     public List<Asset> getAssetsByUserId(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found with id: " + userId);
+        }
         return assetRepository.findByUserId(userId);
     }
 
@@ -50,5 +54,15 @@ public class AssetServiceImpl implements AssetService{
                         Collectors.summingDouble(asset -> asset.getQuantity() * asset.getCurrentPrice())
                 ));
         return new PortfolioSummary(totalValue, distribution);
+    }
+
+    @Override
+    public void deleteAsset(Long userId,Long assetId) {
+        Asset asset = assetRepository.findById(assetId)
+                .orElseThrow(() -> new ResourceNotFoundException("Asset not found with id " + assetId));
+        if (!asset.getUser().getId().equals(userId)){
+            throw new UnauthorizedAccessException("Unauthorized: Asset does not belong to this user");
+        }
+        assetRepository.delete(asset);
     }
 }
